@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
+const util = require('util');
 
 const userSchema = mongoose.Schema({
     name: {
@@ -61,7 +62,7 @@ userSchema.methods.comparePassword = function(plainPassword) {
     return result;
 }
 
-userSchema.methods.generateToken = async function(callbackFunc){
+userSchema.methods.generateToken = async function(){
     const user = this;
 
     // jsonwebtoken 을 이용해서 token 생성
@@ -72,6 +73,23 @@ userSchema.methods.generateToken = async function(callbackFunc){
     try {
         const savedUser = await user.save();
         return user;
+    } catch (error) {
+        return error;
+    }
+}
+
+
+userSchema.statics.findByToken = async function(token){
+    const user = this;
+    const verifyPromise = util.promisify(jwt.verify);
+
+    try {
+        // token 을 decode
+        const decoded = await verifyPromise(token, 'secretToken');
+
+        const userData = await user.findOne({ "_id": decoded, "token": token});
+
+        return userData
     } catch (error) {
         return error;
     }
