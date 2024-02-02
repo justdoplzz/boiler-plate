@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import { applyMiddleware, createStore } from 'redux';
 import promiseMiddleware from 'redux-promise';
 import { thunk } from 'redux-thunk';
@@ -16,12 +17,14 @@ const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, thunk)(crea
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Provider store={createStoreWithMiddleware(Reducer,
-                      window.__REDUX_DEVTOOLS_EXTENSION__ &&
-                      window.__REDUX_DEVTOOLS_EXTENSION__()
-                    )}>
-      <App />
-    </Provider>
+    <BrowserRouter>
+      <Provider store={createStoreWithMiddleware(Reducer,
+                        window.__REDUX_DEVTOOLS_EXTENSION__ &&
+                        window.__REDUX_DEVTOOLS_EXTENSION__()
+                      )}>
+        <App />
+      </Provider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 
